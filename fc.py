@@ -19,8 +19,8 @@ def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", ac
     replacement_char = "_", actually_rename = True)
     """
 
-    print "Cleaning " + clean_type + "..."
-    print "=" * 30
+    print("Cleaning " + clean_type + "...")
+    print("=" * 30)
     ndict = {'dirs': '', 'files': ''}
     for root, ndict['dirs'], ndict['files'] in os.walk(input_path, topdown=False):
         for name in ndict[clean_type]:
@@ -32,9 +32,9 @@ def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", ac
                 newpath = os.path.join(root, newname)
                 if actually_rename:
                     os.rename(path, newpath)
-                    print "Renamed: " + path
+                    print("Renamed: " + path)
                 else:
-                    print "Would have renamed: " + path
-                print "To: " + newpath
-                print "-" * 30
-    print "=" * 30
+                    print("Would have renamed: " + path)
+                print("To: " + newpath)
+                print("-" * 30)
+    print("=" * 30)
