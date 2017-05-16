@@ -2,9 +2,9 @@ from fc import filename_cleaner
 import time
 
 start_time = time.time()
-folder = r"C:\temp\fctest"
+folder = r"/home/username/test"
 clean_types = ["dirs", "files"]
-bad_chars = '_-@'
+bad_chars = '\/*?:"<>|'
 replacement_char = "_"
 actually_rename = False
 

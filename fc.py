@@ -19,6 +19,8 @@ def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", ac
     replacement_char = "_", actually_rename = True)
     """
 
+    # TODO: Validate input
+
     print("Cleaning " + clean_type + "...")
     print("=" * 30)
     ndict = {'dirs': '', 'files': ''}
@@ -38,3 +40,11 @@ def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", ac
                 print("To: " + newpath)
                 print("-" * 30)
     print("=" * 30)
+
+
+if __name__ == "__main__":
+    # TODO: If this module is run directly, run its tests using something like below
+    # import test_fc
+    # test_fc.run_tests()
+    # TODO: Or merge in run_fc.py and convert this to a command-line tool
+    pass
