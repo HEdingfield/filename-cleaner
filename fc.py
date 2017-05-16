@@ -19,7 +19,10 @@ def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", ac
     replacement_char = "_", actually_rename = True)
     """
 
-    # TODO: Validate input
+    # TODO: Validate input further
+    if not os.path.exists(input_path):
+    # if not Path(input_path).exists():
+        raise NotADirectoryError
 
     print("Cleaning " + clean_type + "...")
     print("=" * 30)
