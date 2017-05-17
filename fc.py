@@ -53,18 +53,28 @@ def filename_cleaner(input_path, bad_chars, replacement_char="_", clean_type = "
                 if new_name != name:
                     to_rename[os.path.join(root, name)] = os.path.join(root, new_name)
 
-    print("Cleaning " + clean_type + "...")
+    print("Cleaning " + ("both dirs and files" if clean_type == "both" else clean_type) + "...")
     print("=" * 30)
 
+    unable_to_rename_count = 0
     for name, new_name in to_rename.items():
         if actually_rename:
-            os.rename(name, new_name)
-            print("Renamed: " + name)
+            try:
+                os.rename(name, new_name)
+                print("Renamed: " + name)
+                print("To: " + new_name)
+            except FileExistsError:
+                unable_to_rename_count += 1
+                print("ERROR: Unable to rename: " + name)
+                print("This name is already in use: " + new_name)
         else:
             print("Would have renamed: " + name)
-        print("To: " + new_name)
+            print("To: " + new_name)
         print("-" * 30)
     print("=" * 30)
+
+    if unable_to_rename_count > 0:
+        print("NOTE: Unable to rename " + str(unable_to_rename_count) + " file(s)! See output above for specifics." )
 
 
 if __name__ == "__main__":

@@ -108,10 +108,31 @@ class Test(unittest.TestCase):
         self.assertFalse(names_with_bad_chars_set)
 
     def test_rename_file_if_name_already_exists(self):
-        raise NotImplementedError
+        Path(self.input_path + "\\test!.txt").touch()
+        self.bad_chars = '!1'
+        self.actually_rename = True
+        filename_cleaner(self.input_path, self.bad_chars, self.replacement_char, self.clean_type, self.actually_rename)
+        names_set = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        names_with_bad_chars_set = set()
+        for name in names_set:
+            for c in self.bad_chars:
+                if c in name:
+                    names_with_bad_chars_set.add(name)
+        self.assertEqual(len(names_with_bad_chars_set), 1)
 
     def test_rename_dir_if_name_already_exists(self):
-        raise NotImplementedError
+        bad_dir_path = self.input_path + '\\bad!dir'
+        Path(bad_dir_path).mkdir(parents=True)
+        self.bad_chars = '!1'
+        self.actually_rename = True
+        filename_cleaner(self.input_path, self.bad_chars, self.replacement_char, self.clean_type, self.actually_rename)
+        names_set = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        names_with_bad_chars_set = set()
+        for name in names_set:
+            for c in self.bad_chars:
+                if c in name:
+                    names_with_bad_chars_set.add(name)
+        self.assertEqual(len(names_with_bad_chars_set), 4)
 
 
 if __name__ == "__main__":
