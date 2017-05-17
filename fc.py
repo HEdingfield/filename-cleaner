@@ -1,47 +1,69 @@
 import os
 
 
-def filename_cleaner(input_path, clean_type, bad_chars, replacement_char="_", actually_rename=False):
+def filename_cleaner(input_path, bad_chars, replacement_char="_", clean_type = "both", actually_rename=False):
     """
-    Strips out and replaces undesirable characters from filenames and directories.
+    Strips out and replaces undesirable characters from file and directory names.
 
     :param input_path: The path where you want to do the renaming (note that it recursively searches all
     subdirectories).
-    :param clean_type: "dirs" if you want to rename directories and "files" if you want to rename files.
     :param bad_chars: Characters to strip out (can be a list or a string; if a string is provided, each character in
     the string will be treated separately).
     :param replacement_char: Character to replace the bad characters with.
+    :param clean_type: "files" if you only want to rename files; "dirs" if you only want to rename directories; "both"
+    if you want to rename both.
     :param actually_rename: True to actually rename the files or directories; false to just do a test run without
     renaming anything.
 
     Usage example:
-    filename_cleaner(input_path = r"/home/user/test", clean_type = "dirs", bad_chars = '\/*?:"<>|',
-    replacement_char = "_", actually_rename = True)
+    filename_cleaner(input_path = r"/home/user/test", bad_chars = '\/*?:"<>|', replacement_char = "_", 
+    clean_type = "both", actually_rename = True)
     """
 
     # TODO: Validate input further
     if not os.path.exists(input_path):
-    # if not Path(input_path).exists():
         raise NotADirectoryError
+
+    if clean_type == "files":
+        clean_files = True
+        clean_dirs = False
+    elif clean_type == "dirs":
+        clean_files = False
+        clean_dirs = True
+    elif clean_type == "both":
+        clean_files = True
+        clean_dirs = True
+    else:
+        raise Exception("Invalid clean_type, please use a valid value!")
+
+    to_rename = {}
+    for root, dirs, files in os.walk(input_path, topdown=False):
+        if clean_dirs:
+            for name in dirs:
+                new_name = name
+                for c in bad_chars:
+                    new_name = new_name.replace(c, replacement_char)
+                if new_name != name:
+                    to_rename[os.path.join(root, name)] = os.path.join(root, new_name)
+        if clean_files:
+            for name in files:
+                new_name = name
+                for c in bad_chars:
+                    new_name = new_name.replace(c, replacement_char)
+                if new_name != name:
+                    to_rename[os.path.join(root, name)] = os.path.join(root, new_name)
 
     print("Cleaning " + clean_type + "...")
     print("=" * 30)
-    ndict = {'dirs': '', 'files': ''}
-    for root, ndict['dirs'], ndict['files'] in os.walk(input_path, topdown=False):
-        for name in ndict[clean_type]:
-            newname = name
-            for c in bad_chars:
-                newname = newname.replace(c, replacement_char)
-            if newname != name:
-                path = os.path.join(root, name)
-                newpath = os.path.join(root, newname)
-                if actually_rename:
-                    os.rename(path, newpath)
-                    print("Renamed: " + path)
-                else:
-                    print("Would have renamed: " + path)
-                print("To: " + newpath)
-                print("-" * 30)
+
+    for name, new_name in to_rename:
+        if actually_rename:
+            os.rename(name, new_name)
+            print("Renamed: " + name)
+        else:
+            print("Would have renamed: " + name)
+        print("To: " + new_name)
+        print("-" * 30)
     print("=" * 30)
 
 

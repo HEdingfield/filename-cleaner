@@ -1,2 +1,2 @@
 # filename-cleaner
-Strips out and replaces undesirable characters from filenames and directories.
+Strips out and replaces undesirable characters from file and directory names.
