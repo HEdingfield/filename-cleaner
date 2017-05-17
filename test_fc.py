@@ -68,10 +68,44 @@ class Test(unittest.TestCase):
         self.assertFalse(names_set_before ^ names_set_after_reverted)
 
     def test_rename_dirs(self):
-        raise NotImplementedError
+        self.bad_chars = '1'
+        self.clean_type = 'dirs'
+        self.actually_rename = True
+        names_set_before = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        filename_cleaner(self.input_path, self.bad_chars, self.replacement_char, self.clean_type, self.actually_rename)
+        names_set_after = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        names_set_after_reverted = set()
+        for name in names_set_after:
+            if '.' in name:
+                # FIXME: Problem here and in next clause if working directory contains an underscore
+                names_set_after_reverted.add(name.rsplit("\\", 1)[0].replace('_', '1') + "\\" + name.split("\\")[-1])
+            else:
+                names_set_after_reverted.add(name.replace('_', '1'))
+        self.assertFalse(names_set_before ^ names_set_after_reverted)
 
     def test_rename_both(self):
-        raise NotImplementedError
+        self.bad_chars = '!'
+        self.actually_rename = True
+        names_set_before = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        filename_cleaner(self.input_path, self.bad_chars, self.replacement_char, self.clean_type, self.actually_rename)
+        names_set_after = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        names_set_after_reverted = set()
+        for name in names_set_after:
+            # FIXME: Problem here if working directory contains an underscore
+            names_set_after_reverted.add(name.replace('_', '!'))
+        self.assertFalse(names_set_before ^ names_set_after_reverted)
+
+    def test_fix_all_bad_chars(self):
+        self.bad_chars = '!1'
+        self.actually_rename = True
+        filename_cleaner(self.input_path, self.bad_chars, self.replacement_char, self.clean_type, self.actually_rename)
+        names_set = set([str(name) for name in Path(self.input_path).glob('**/*')])
+        names_with_bad_chars_set = set()
+        for name in names_set:
+            for c in self.bad_chars:
+                if c in name:
+                    names_with_bad_chars_set.add(name)
+        self.assertFalse(names_with_bad_chars_set)
 
     def test_rename_file_if_name_already_exists(self):
         raise NotImplementedError
