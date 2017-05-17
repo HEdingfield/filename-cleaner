@@ -56,7 +56,7 @@ def filename_cleaner(input_path, bad_chars, replacement_char="_", clean_type = "
     print("Cleaning " + clean_type + "...")
     print("=" * 30)
 
-    for name, new_name in to_rename:
+    for name, new_name in to_rename.items():
         if actually_rename:
             os.rename(name, new_name)
             print("Renamed: " + name)
